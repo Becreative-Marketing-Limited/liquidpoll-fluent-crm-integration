@@ -54,22 +54,31 @@ if ( ! class_exists( 'LIQUIDPOLL_Integration_fluent_crm' ) ) {
 			global $wpdb;
 
 			$poll_id       = Utils::get_args_option( 'poll_id', $args );
+			$poller_id_ip  = Utils::get_args_option( 'poller_id_ip', $args );
 			$email_address = Utils::get_args_option( 'email_address', $args );
 			$first_name    = Utils::get_args_option( 'first_name', $args );
 			$last_name     = Utils::get_args_option( 'last_name', $args );
 			$datetime      = Utils::get_args_option( 'datetime', $args );
 			$fcrm_lists    = Utils::get_meta( 'poll_form_int_fcrm_lists', $poll_id, array() );
 			$fcrm_tags     = Utils::get_meta( 'poll_form_int_fcrm_tags', $poll_id, array() );
+			$polled_value  = $wpdb->get_var( $wpdb->prepare( "SELECT polled_value FROM " . LIQUIDPOLL_RESULTS_TABLE . " WHERE poll_id = %d AND poller_id_ip = %s ORDER BY datetime DESC LIMIT 1", $poll_id, $poller_id_ip ) );
 
-			$polled_value = $wpdb->get_var( "SELECT polled_value FROM " . LIQUIDPOLL_RESULTS_TABLE . " WHERE poll_id = {$args['poll_id']} AND poll_type = 'poll' AND poller_id_ip = '{$args['poller_id_ip']}' ORDER BY datetime DESC LIMIT 1" );
 
 			if ( ! empty( $polled_value ) ) {
 				$poll         = liquidpoll_get_poll( $poll_id );
 				$poll_options = $poll->get_poll_options();
+				$poll_type    = $poll->get_type();
 
 				foreach ( $poll_options as $option_id => $option ) {
 					if ( $polled_value == $option_id ) {
-						$fcrm_tags = array_merge( $fcrm_tags, Utils::get_args_option( 'fcrm_tags', $option, array() ) );
+
+						if ( 'poll' == $poll_type ) {
+							$fcrm_tags = array_merge( $fcrm_tags, Utils::get_args_option( 'fcrm_tags', $option, array() ) );
+						}
+
+						if ( 'nps' == $poll_type ) {
+							$fcrm_tags = array_merge( $fcrm_tags, Utils::get_args_option( 'fcrm_nps_tags', $option, array() ) );
+						}
 
 						break;
 					}
@@ -106,7 +115,7 @@ if ( ! class_exists( 'LIQUIDPOLL_Integration_fluent_crm' ) ) {
 				$field_sections['poll_form']['fields'][] = array(
 					'type'       => 'subheading',
 					'content'    => esc_html__( 'Integration - FluentCRM', 'wp-poll' ),
-					'dependency' => array( '_type', '==', 'poll', 'all' ),
+					'dependency' => array( '_type', 'any', 'poll,nps', 'all' ),
 				);
 
 				$field_sections['poll_form']['fields'][] = array(
@@ -115,7 +124,7 @@ if ( ! class_exists( 'LIQUIDPOLL_Integration_fluent_crm' ) ) {
 					'label'      => esc_html__( 'This will store the submissions in FluentCRM.', 'wp-poll' ),
 					'type'       => 'switcher',
 					'default'    => false,
-					'dependency' => array( '_type', '==', 'poll', 'all' ),
+					'dependency' => array( '_type', 'any', 'poll,nps', 'all' ),
 				);
 
 				$field_sections['poll_form']['fields'][] = array(
@@ -126,7 +135,7 @@ if ( ! class_exists( 'LIQUIDPOLL_Integration_fluent_crm' ) ) {
 					'multiple'   => true,
 					'chosen'     => true,
 					'options'    => $this->get_fluent_crm_lists(),
-					'dependency' => array( '_type|poll_form_int_fcrm_enable', '==|==', 'poll|true', 'all' ),
+					'dependency' => array( '_type|poll_form_int_fcrm_enable', 'any|==', 'poll,nps|true', 'all' ),
 				);
 
 				$field_sections['poll_form']['fields'][] = array(
@@ -137,7 +146,7 @@ if ( ! class_exists( 'LIQUIDPOLL_Integration_fluent_crm' ) ) {
 					'multiple'   => true,
 					'chosen'     => true,
 					'options'    => $this->get_fluent_crm_tags(),
-					'dependency' => array( '_type|poll_form_int_fcrm_enable', '==|==', 'poll|true', 'all' ),
+					'dependency' => array( '_type|poll_form_int_fcrm_enable', 'any|==', 'poll,nps|true', 'all' ),
 				);
 
 				foreach ( Utils::get_args_option( 'fields', $field_sections['poll_options'], array() ) as $index => $arr_field ) {
@@ -151,6 +160,22 @@ if ( ! class_exists( 'LIQUIDPOLL_Integration_fluent_crm' ) ) {
 							'chosen'     => true,
 							'options'    => $this->get_fluent_crm_tags(),
 							'dependency' => array( '_type', '==', 'poll', 'all' ),
+						);
+						break;
+					}
+				}
+
+				foreach ( Utils::get_args_option( 'fields', $field_sections['poll_options'], array() ) as $index => $arr_field ) {
+					if ( isset( $arr_field['id'] ) && 'poll_meta_options_nps' == $arr_field['id'] ) {
+						$field_sections['poll_options']['fields'][ $index ]['fields'][] = array(
+							'id'         => 'fcrm_nps_tags',
+							'title'      => esc_html__( 'Select Tags', 'wp-poll' ),
+							'subtitle'   => esc_html__( 'Select FluentCRM tags', 'wp-poll' ),
+							'type'       => 'select',
+							'multiple'   => true,
+							'chosen'     => true,
+							'options'    => $this->get_fluent_crm_tags(),
+							'dependency' => array( '_type', '==', 'nps', 'all' ),
 						);
 						break;
 					}
@@ -275,4 +300,3 @@ add_action( 'tgmpa_register', 'liquidpoll_fluentcrm_integration_required_plugins
 
 
 add_action( 'pb_sdk_init_wp_poll', array( 'LIQUIDPOLL_Integration_fluent_crm', 'instance' ) );
-
