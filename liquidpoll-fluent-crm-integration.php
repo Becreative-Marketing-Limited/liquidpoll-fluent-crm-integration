@@ -115,7 +115,7 @@ if ( ! class_exists( 'LIQUIDPOLL_Integration_fluent_crm' ) ) {
 				$field_sections['poll_form']['fields'][] = array(
 					'type'       => 'subheading',
 					'content'    => esc_html__( 'Integration - FluentCRM', 'wp-poll' ),
-					'dependency' => array( '_type', 'any', 'poll,nps', 'all' ),
+					'dependency' => array( '_type', 'any', 'poll,nps,reaction', 'all' ),
 				);
 
 				$field_sections['poll_form']['fields'][] = array(
@@ -124,7 +124,7 @@ if ( ! class_exists( 'LIQUIDPOLL_Integration_fluent_crm' ) ) {
 					'label'      => esc_html__( 'This will store the submissions in FluentCRM.', 'wp-poll' ),
 					'type'       => 'switcher',
 					'default'    => false,
-					'dependency' => array( '_type', 'any', 'poll,nps', 'all' ),
+					'dependency' => array( '_type', 'any', 'poll,nps,reaction', 'all' ),
 				);
 
 				$field_sections['poll_form']['fields'][] = array(
@@ -135,7 +135,7 @@ if ( ! class_exists( 'LIQUIDPOLL_Integration_fluent_crm' ) ) {
 					'multiple'   => true,
 					'chosen'     => true,
 					'options'    => $this->get_fluent_crm_lists(),
-					'dependency' => array( '_type|poll_form_int_fcrm_enable', 'any|==', 'poll,nps|true', 'all' ),
+					'dependency' => array( '_type|poll_form_int_fcrm_enable', 'any|==', 'poll,nps,reaction|true', 'all' ),
 				);
 
 				$field_sections['poll_form']['fields'][] = array(
@@ -146,7 +146,7 @@ if ( ! class_exists( 'LIQUIDPOLL_Integration_fluent_crm' ) ) {
 					'multiple'   => true,
 					'chosen'     => true,
 					'options'    => $this->get_fluent_crm_tags(),
-					'dependency' => array( '_type|poll_form_int_fcrm_enable', 'any|==', 'poll,nps|true', 'all' ),
+					'dependency' => array( '_type|poll_form_int_fcrm_enable', 'any|==', 'poll,nps,reaction|true', 'all' ),
 				);
 
 				foreach ( Utils::get_args_option( 'fields', $field_sections['poll_options'], array() ) as $index => $arr_field ) {
