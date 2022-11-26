@@ -3,7 +3,7 @@
  * Plugin Name: LiquidPoll - FluentCRM Integration
  * Plugin URI: https://liquidpoll.com/plugin/liquidpoll-fluent-crm-integration
  * Description: Integration with FluentCRM
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: LiquidPoll
  * Text Domain: liquidpoll-fluent-crm-integration
  * Domain Path: /languages/
