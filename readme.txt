@@ -99,4 +99,4 @@ Display all your polls in one place so that you can create a landing page where 
 * 26/11/2022 - NEW - Form added for nps and reaction.
 
 = 1.0.3 =
-* 26/11/2022 - TWEAK - Fix issues.
+* 26/12/2022 - FIX - Fix issues.
