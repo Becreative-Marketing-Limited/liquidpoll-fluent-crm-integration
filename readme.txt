@@ -4,7 +4,7 @@
 	Tags: poll, polls, survey, CRM, vote
 	Requires at least: 4.6
 	Tested up to: 6.1.1
-	Stable tag: 1.0.2
+	Stable tag: 1.0.3
 	License: GPLv2 or later
 	License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -97,3 +97,6 @@ Display all your polls in one place so that you can create a landing page where 
 
 = 1.0.2 =
 * 26/11/2022 - NEW - Form added for nps and reaction.
+
+= 1.0.3 =
+* 26/11/2022 - TWEAK - Fix issues.

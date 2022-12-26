@@ -3,7 +3,7 @@
  * Plugin Name: LiquidPoll - FluentCRM Integration
  * Plugin URI: https://liquidpoll.com/plugin/liquidpoll-fluent-crm-integration
  * Description: Integration with FluentCRM
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: LiquidPoll
  * Text Domain: liquidpoll-fluent-crm-integration
  * Domain Path: /languages/
@@ -14,7 +14,7 @@
 
 use FluentCrm\App\Models\Lists;
 use FluentCrm\App\Models\Tag;
-use Pluginbazar\Utils;
+use WPDK\Utils;
 
 defined( 'ABSPATH' ) || exit;
 defined( 'LIQUIDPOLL_FLUENTCRM_PLUGIN_URL' ) || define( 'LIQUIDPOLL_FLUENTCRM_PLUGIN_URL', WP_PLUGIN_URL . '/' . plugin_basename( dirname( __FILE__ ) ) . '/' );
@@ -299,4 +299,4 @@ if ( ! function_exists( 'liquidpoll_fluentcrm_integration_required_plugins' ) ) 
 add_action( 'tgmpa_register', 'liquidpoll_fluentcrm_integration_required_plugins' );
 
 
-add_action( 'pb_sdk_init_wp_poll', array( 'LIQUIDPOLL_Integration_fluent_crm', 'instance' ) );
+add_action( 'wpdk_init_wp_poll', array( 'LIQUIDPOLL_Integration_fluent_crm', 'instance' ) );
